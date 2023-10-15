@@ -1,7 +1,7 @@
-const router = require("express").Router();
-const cardsData = require("../data/cards.json");
+const router = require('express').Router();
+const cardsData = require('../data/cards.json');
 
-router.get("/cards", (req, res) => {
+router.get('/cards', (req, res) => {
   res.json(cardsData);
 });
 
