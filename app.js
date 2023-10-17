@@ -9,7 +9,7 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
-const userDataPath = path.join(__dirname, 'data', 'users.js');
+const userDataPath = path.join(__dirname, 'data', 'users.json');
 const cardsDataPath = path.join(__dirname, 'data', 'cards.json');
 
 app.get('/users', (req, res) => {
