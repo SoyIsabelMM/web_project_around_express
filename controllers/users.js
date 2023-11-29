@@ -40,3 +40,17 @@ module.exports.getUserById = async (req, res) => {
       .json({ mensaje: 'Error al obtener usuario desde la base de datos' });
   }
 };
+
+module.exports.createUser = async (req, res) => {
+  const { name, about, avatar } = req.body;
+
+  try {
+    await Users.create({ name, about, avatar });
+
+    return res.status(201).json({ name, about, avatar });
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).json({ message: 'Error al crear un nuevo usuario' });
+  }
+};
