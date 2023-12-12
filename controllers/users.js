@@ -6,7 +6,7 @@ const SERVEL_ERROR = 500;
 
 module.exports.getUsers = async (req, res) => {
   try {
-    const users = await Users.find({});
+    const users = await Users.find({}).orFail();
 
     res.json({ data: users });
   } catch (err) {
@@ -21,15 +21,7 @@ module.exports.getUserById = async (req, res) => {
   const id = req.params._id;
 
   try {
-    const user = await Users.findById(id);
-
-    console.log(user);
-
-    if (!user) {
-      return res
-        .status(NOT_FOUND)
-        .json({ message: 'ID de usuario no encontrado' });
-    }
+    const user = await Users.findById(id).orFail();
 
     return res.json(user);
   } catch (err) {
@@ -40,7 +32,7 @@ module.exports.getUserById = async (req, res) => {
     console.error(err);
     return res
       .status(SERVEL_ERROR)
-      .json({ mensaje: 'Error al obtener usuario desde la base de datos' });
+      .json({ mensaje: 'Error al obtener tarjeta desde la base de datos' });
   }
 };
 

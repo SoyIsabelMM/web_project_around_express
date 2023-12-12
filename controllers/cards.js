@@ -8,7 +8,7 @@ const SERVEL_ERROR = 500;
 
 module.exports.getCards = async (req, res) => {
   try {
-    const cards = await Cards.find({});
+    const cards = await Cards.find({}).orFail();
 
     return res.json({ cards });
   } catch (err) {
@@ -51,20 +51,21 @@ module.exports.createCard = async (req, res) => {
 module.exports.deleteCard = async (req, res) => {
   const cardId = req.params.cardId;
 
-  if (!mongoose.Types.ObjectId.isValid(cardId)) {
-    return res.status(ERROR_CODE).json({ message: 'ID de tarjeta invalido' });
-  }
-
   try {
-    const result = await Cards.findByIdAndDelete(cardId);
-
-    if (!result) {
-      return res.status(NOT_FOUND).json({ message: 'Tarjeta no encontrada' });
+    if (!mongoose.Types.ObjectId.isValid(cardId)) {
+      return res.status(ERROR_CODE).json({ message: 'ID de tarjeta invalido' });
     }
+
+    await Cards.findByIdAndDelete(cardId).orFail();
 
     return res.status(200).json({ message: 'Tarjeta eliminada exitosamente' });
   } catch (err) {
     console.error(err);
+
+    if (err instanceof mongoose.Error.DocumentNotFoundError) {
+      return res.status(NOT_FOUND).json({ message: 'Tarjeta no encontrada' });
+    }
+
     return res
       .status(SERVEL_ERROR)
       .json({ message: 'Error interno del servidor' });
