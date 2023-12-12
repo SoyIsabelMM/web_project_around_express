@@ -77,3 +77,21 @@ module.exports.updateUserProfile = async (req, res) => {
       .json({ message: 'Error interno del servidor' });
   }
 };
+
+module.exports.updateAvatarProfile = async (req, res) => {
+  const id = req.user._id;
+
+  const { avatar } = req.body;
+
+  try {
+    await Users.findByIdAndUpdate(id, { avatar }).orFail();
+
+    res.status(200).json({ message: 'Actualización exitosa' });
+  } catch (err) {
+    console.error(err);
+
+    return res
+      .status(SERVEL_ERROR)
+      .json({ message: 'Error interno del servido' });
+  }
+};

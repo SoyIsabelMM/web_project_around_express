@@ -4,6 +4,7 @@ const {
   getUserById,
   createUser,
   updateUserProfile,
+  updateAvatarProfile,
 } = require('../controllers/users');
 const mongoose = require('mongoose');
 
@@ -21,5 +22,6 @@ router.get('/users', getUsers);
 router.get('/users/:_id', validateObjectId, getUserById);
 router.post('/users', createUser);
 router.patch('/users/me', updateUserProfile);
+router.patch('/users/me/avatar', updateAvatarProfile);
 
 module.exports = router;
