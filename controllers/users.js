@@ -8,8 +8,6 @@ module.exports.getUsers = async (req, res) => {
   try {
     const users = await Users.find({});
 
-    console.log('traer todos', users);
-
     res.json({ data: users });
   } catch (err) {
     console.error(err);
@@ -59,5 +57,23 @@ module.exports.createUser = async (req, res) => {
     return res
       .status(SERVEL_ERROR)
       .json({ message: 'Error al crear un nuevo usuario' });
+  }
+};
+
+module.exports.updateUserProfile = async (req, res) => {
+  const id = req.user._id;
+
+  const { name, about } = req.body;
+
+  try {
+    await Users.findByIdAndUpdate(id, { name, about }).orFail();
+
+    res.status(200).json({ message: 'Actualización exitosa' });
+  } catch (err) {
+    console.error(err);
+
+    return res
+      .status(SERVEL_ERROR)
+      .json({ message: 'Error interno del servidor' });
   }
 };

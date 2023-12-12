@@ -1,5 +1,10 @@
 const router = require('express').Router();
-const { getUsers, getUserById, createUser } = require('../controllers/users');
+const {
+  getUsers,
+  getUserById,
+  createUser,
+  updateUserProfile,
+} = require('../controllers/users');
 const mongoose = require('mongoose');
 
 const validateObjectId = (req, res, next) => {
@@ -15,5 +20,6 @@ const validateObjectId = (req, res, next) => {
 router.get('/users', getUsers);
 router.get('/users/:_id', validateObjectId, getUserById);
 router.post('/users', createUser);
+router.patch('/users/me', updateUserProfile);
 
 module.exports = router;
