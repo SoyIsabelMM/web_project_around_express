@@ -1,6 +1,9 @@
 const { default: mongoose } = require('mongoose');
 const Users = require('../models/user');
 
+const NOT_FOUND = 404;
+const SERVEL_ERROR = 500;
+
 module.exports.getUsers = async (req, res) => {
   try {
     const users = await Users.find({});
@@ -11,7 +14,7 @@ module.exports.getUsers = async (req, res) => {
   } catch (err) {
     console.error(err);
     res
-      .status(500)
+      .status(SERVEL_ERROR)
       .json({ message: 'Error al obtener usuarios desde la base de datos' });
   }
 };
@@ -25,18 +28,20 @@ module.exports.getUserById = async (req, res) => {
     console.log(user);
 
     if (!user) {
-      return res.status(404).json({ message: 'ID de usuario no encontrado' });
+      return res
+        .status(NOT_FOUND)
+        .json({ message: 'ID de usuario no encontrado' });
     }
 
     return res.json(user);
   } catch (err) {
     if (err instanceof mongoose.CastsError) {
-      return res.status(404).json({ message: 'ID de usuario no válido' });
+      return res.status(NOT_FOUND).json({ message: 'ID de usuario no válido' });
     }
 
     console.error(err);
     return res
-      .status(500)
+      .status(SERVEL_ERROR)
       .json({ mensaje: 'Error al obtener usuario desde la base de datos' });
   }
 };
@@ -51,6 +56,8 @@ module.exports.createUser = async (req, res) => {
   } catch (err) {
     console.error(err);
 
-    return res.status(500).json({ message: 'Error al crear un nuevo usuario' });
+    return res
+      .status(SERVEL_ERROR)
+      .json({ message: 'Error al crear un nuevo usuario' });
   }
 };
