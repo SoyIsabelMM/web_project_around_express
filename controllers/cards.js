@@ -71,3 +71,29 @@ module.exports.deleteCard = async (req, res) => {
       .json({ message: 'Error interno del servidor' });
   }
 };
+
+module.exports.likeCard = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res
+        .status(ERROR_CODE)
+        .json({ message: ' ID de usuario no valido' });
+    }
+
+    await Cards.findByIdAndUpdate(
+      req.params.cardId,
+      { $addToSet: { likes: userId } },
+      { new: true },
+    ).orFail();
+
+    return res.status(200).json({ message: 'Le diste like a la card' });
+  } catch (err) {
+    console.error(err);
+
+    return res
+      .status(SERVEL_ERROR)
+      .json({ message: 'Error interno del servidor' });
+  }
+};
