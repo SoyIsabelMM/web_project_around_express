@@ -1,6 +1,5 @@
 const { default: mongoose } = require('mongoose');
 const Cards = require('../models/card');
-const User = require('../models/user');
 
 const ERROR_CODE = 400;
 const NOT_FOUND = 404;
@@ -89,6 +88,32 @@ module.exports.likeCard = async (req, res) => {
     ).orFail();
 
     return res.status(200).json({ message: 'Le diste like a la card' });
+  } catch (err) {
+    console.error(err);
+
+    return res
+      .status(SERVEL_ERROR)
+      .json({ message: 'Error interno del servidor' });
+  }
+};
+
+module.exports.disLikeCard = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res
+        .status(ERROR_CODE)
+        .json({ message: 'ID de usuario no valido' });
+    }
+
+    await Cards.findByIdAndUpdate(
+      req.params.cardId,
+      { $pull: { likes: userId } },
+      { new: true },
+    ).orFail();
+
+    return res.status(200).json({ message: 'Like removido con exito' });
   } catch (err) {
     console.error(err);
 
