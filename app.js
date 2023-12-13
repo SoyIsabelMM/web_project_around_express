@@ -1,40 +1,22 @@
-const fs = require('fs');
-const path = require('path');
-
 const express = require('express');
+const mongoose = require('mongoose');
+
 const usersRoute = require('./routes/users');
 const cardsRoute = require('./routes/cards');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
+app.use(express.json());
 
-const userDataPath = path.join(__dirname, 'data', 'users.json');
-const cardsDataPath = path.join(__dirname, 'data', 'cards.json');
+mongoose.connect('mongodb://localhost:27017/aroundb');
 
-app.get('/users', (req, res) => {
-  fs.readFile(userDataPath, 'utf8', (err, data) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({ message: 'Error interno del servidor' });
-    }
-    const users = JSON.parse(data);
+app.use((req, res, next) => {
+  req.user = {
+    _id: '6566954f6f85c8f7595e2979',
+  };
 
-    return res.json({ users });
-  });
-});
-
-app.get('/cards', (req, res) => {
-  fs.readFile(cardsDataPath, 'utf8', (err, data) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({ message: 'Error interno del servidor' });
-    }
-
-    const cards = JSON.parse(data);
-
-    return res.json({ cards });
-  });
+  next();
 });
 
 app.use('/', usersRoute, cardsRoute);

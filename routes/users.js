@@ -1,19 +1,27 @@
 const router = require('express').Router();
-const usersData = require('../data/users.json');
+const {
+  getUsers,
+  getUserById,
+  createUser,
+  updateUserProfile,
+  updateAvatarProfile,
+} = require('../controllers/users');
+const mongoose = require('mongoose');
 
-router.get('/users', (req, res) => {
-  res.json(usersData);
-});
-
-router.get('/users/:_id', (req, res) => {
+const validateObjectId = (req, res, next) => {
   const id = req.params._id;
-  const user = usersData.find((_user) => _user._id === id);
 
-  if (!user) {
-    res.status(404).json({ message: 'ID de usuario no encontrado' });
-  } else {
-    res.json(user);
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ message: 'ID de usuario no válido' });
   }
-});
+
+  next();
+};
+
+router.get('/users', getUsers);
+router.get('/users/:_id', validateObjectId, getUserById);
+router.post('/users', createUser);
+router.patch('/users/me', updateUserProfile);
+router.patch('/users/me/avatar', updateAvatarProfile);
 
 module.exports = router;
